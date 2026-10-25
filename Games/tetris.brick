@@ -1,0 +1,184 @@
+# tetris.brick
+GAME_TYPE TETRIS
+
+GAME_GRID (10, 20)
+
+# --- Definicion de las Piezas ---
+DEFINE SHAPE I_PIECE:
+  STATE 1:
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+  STATE 2:
+    [0, 0, 0, 0]
+    [1, 1, 1, 1]
+    [0, 0, 0, 0]
+    [0, 0, 0, 0]
+END
+
+DEFINE SHAPE LL_PIECE:
+  STATE 1:
+    [0, 1, 0]
+    [0, 1, 0]
+    [1, 1, 0]
+  STATE 2:
+    [1, 0, 0]
+    [1, 1, 1]
+    [0, 0, 0]
+  STATE 3:
+    [0, 1, 1]
+    [0, 1, 0]
+    [0, 1, 0]
+  STATE 4:
+    [0, 0, 0]
+    [1, 1, 1]
+    [0, 0, 1]
+END
+
+
+DEFINE SHAPE L_PIECE:
+  STATE 1:
+    [0, 1, 0]
+    [0, 1, 0]
+    [0, 1, 1]
+  STATE 2:
+    [0, 0, 0]
+    [1, 1, 1]
+    [1, 0, 0]
+  STATE 3:
+    [1, 1, 0]
+    [0, 1, 0]
+    [0, 1, 0]
+  STATE 4:
+    [0, 0, 1]
+    [1, 1, 1]
+    [0, 0, 0]
+END
+
+DEFINE SHAPE T_PIECE:
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [0, 0, 0]
+  STATE 2:
+    [0, 1, 0]
+    [0, 1, 1]
+    [0, 1, 0]
+  STATE 3:
+    [0, 0, 0]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 0]
+    [1, 1, 0]
+    [0, 1, 0]
+END
+
+DEFINE SHAPE S_PIECE:
+  STATE 1:
+    [0, 1, 1]
+    [1, 1, 0]
+    [0, 0, 0]
+  STATE 2:
+    [0, 1, 0]
+    [0, 1, 1]
+    [0, 0, 1]
+  STATE 3:
+    [0, 0, 0]
+    [0, 1, 1]
+    [1, 1, 0]
+  STATE 4:
+    [1, 0, 0]
+    [1, 1, 0]
+    [0, 1, 0]
+END
+
+DEFINE SHAPE Z_PIECE:
+  STATE 1:
+    [0, 0, 0]
+    [1, 1, 0]
+    [0, 1, 1]
+  STATE 2:
+    [0, 1, 0]
+    [1, 1, 0]
+    [1, 0, 0]
+  STATE 3:
+    [1, 1, 0]
+    [0, 1, 1]
+    [0, 0, 0]
+  STATE 4:
+    [0, 0, 1]
+    [0, 1, 1]
+    [0, 1, 0]
+END
+
+DEFINE SHAPE O_PIECE:
+  STATE 1:
+    [1, 1, 0]
+    [1, 1, 0]
+    [0, 0, 0]
+  STATE 2:
+    [1, 1, 0]
+    [1, 1, 0]
+    [0, 0, 0]
+  STATE 3:
+    [1, 1, 0]
+    [1, 1, 0]
+    [0, 0, 0]
+  STATE 4:
+    [1, 1, 0]
+    [1, 1, 0]
+    [0, 0, 0]
+END
+
+# Definición de probabilidades de Power-Ups
+# Borrará 3 filas cuando se active este Power-Up
+POWERUP CLEAR_ROW: 3
+POWERUP BOMB_PIECE: 15
+
+# --- Definicion de los colores de las Piezas ---
+COLOR O_PIECE: FFFF00
+COLOR Z_PIECE: FF0000
+COLOR S_PIECE: 00FF00
+COLOR T_PIECE: 800080
+COLOR L_PIECE: FFA500
+COLOR LL_PIECE: 0000FF
+COLOR I_PIECE: 00FFFF
+
+# --- Definicion de las probabilidades de las Piezas ---
+CHANCE O_PIECE: 15
+CHANCE Z_PIECE: 15
+CHANCE S_PIECE: 15
+CHANCE T_PIECE: 15
+CHANCE L_PIECE: 15
+CHANCE LL_PIECE: 15
+CHANCE I_PIECE: 15
+
+# --- Logica y Reglas ---
+ON START:
+  SPAWN RANDOM_SHAPE
+END
+
+# ON_TICK es el evento que controla la gravedad
+ON TICK:
+  MOVE CURRENT_PIECE DOWN
+END
+
+ON LINE_CLEAR:
+  INCREASE_SCORE 100
+END
+
+# --- Controles ---
+ON KEY_LEFT:
+  MOVE CURRENT_PIECE LEFT
+END
+ON KEY_RIGHT:
+  MOVE CURRENT_PIECE RIGHT
+END
+ON KEY_DOWN:
+  MOVE CURRENT_PIECE DOWN
+END
+ON KEY_UP:
+  ROTATE CURRENT_PIECE
+END

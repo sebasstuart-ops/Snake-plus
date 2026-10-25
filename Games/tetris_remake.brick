@@ -1,0 +1,160 @@
+# tetris_remake.brick
+GAME_TYPE TETRIS
+
+GAME_GRID (10, 20)
+
+DEFINE SHAPE I_PIECE:
+  COLOR:#00FFFF
+  CHANCE: 20
+  STATE 1:
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+    [0, 1, 0, 0]
+  STATE 2:
+    [0, 0, 0, 0]
+    [1, 1, 1, 1]
+    [0, 0, 0, 0]
+    [0, 0, 0, 0]
+  STATE 3:
+    [0, 0, 1, 0]
+    [0, 0, 1, 0]
+    [0, 0, 1, 0]
+    [0, 0, 1, 0]
+  STATE 4:
+    [0, 0, 0, 0]
+    [0, 0, 0, 0]
+    [1, 1, 1, 1]
+    [0, 0, 0, 0]
+END
+
+DEFINE SHAPE L_PIECE:
+  COLOR:#FF8C00
+  CHANCE: 20
+  STATE 1:
+    [0, 1, 0]
+    [0, 1, 0]
+    [0, 1, 1]
+  STATE 2:
+    [0, 0, 0]
+    [1, 1, 1]
+    [1, 0, 0]
+  STATE 3:
+    [1, 1, 0]
+    [0, 1, 0]
+    [0, 1, 0]
+  STATE 4:
+    [0, 0, 1]
+    [1, 1, 1]
+    [0, 0, 0]
+END
+
+DEFINE SHAPE T_PIECE:
+  COLOR:#AA00FF
+  CHANCE: 20
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [0, 0, 0]
+  STATE 2:
+    [0, 1, 0]
+    [0, 1, 1]
+    [0, 1, 0]
+  STATE 3:
+    [0, 0, 0]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 0]
+    [1, 1, 0]
+    [0, 1, 0]
+END
+
+DEFINE SHAPE O_PIECE:
+  COLOR:#FFFF00
+  CHANCE:20
+  STATE 1:
+    [1, 1, 1]
+    [1, 1, 1]
+    [1, 1, 1]
+END
+
+DEFINE SHAPE Z_PIECE:
+  COLOR:#FF0000
+  CHANCE: 20
+  STATE 1:
+    [1, 1, 0]
+    [0, 1, 1]
+    [0, 0, 0]
+  STATE 2:
+    [0, 0, 1]
+    [0, 1, 1]
+    [0, 1, 0]
+  STATE 3:
+    [0, 0, 0]
+    [1, 1, 0]
+    [0, 1, 1]
+  STATE 4:
+    [0, 1, 0]
+    [1, 1, 0]
+    [1, 0, 0]
+END
+
+DEFINE SHAPE OO_PIECE:
+  COLOR:#FF00FF
+  CHANCE: 10000000
+  STATE 1:
+    [0, 1, 1]
+    [0, 1, 1]
+    [0, 0, 0]
+  STATE 2:
+    [0, 0, 0]
+    [0, 1, 1]
+    [0, 1, 1]
+  STATE 3:
+    [0, 0, 0]
+    [1, 1, 0]
+    [1, 1, 0]
+  STATE 4:
+    [1, 1, 0]
+    [1, 1, 0]
+    [0, 0, 0]
+END
+
+
+DEFINE POWERUP BOMBA_FILA:
+  COLOR:#FFFFFF
+  EFFECT: CLEAR_ROW
+  TRIGGER_LINES: 2
+  TRIGGER_ROTATE: Z_PIECE 3
+  STATE 1:
+    [1]
+END
+
+# --- Logica y Reglas ---
+ON START:
+  SPAWN RANDOM_SHAPE
+END
+
+# ON_TICK es el evento que controla la gravedad
+ON TICK:
+  MOVE CURRENT_PIECE DOWN
+END
+
+ON LINE_CLEAR:
+  INCREASE_SCORE 100
+END
+
+# --- Controles ---
+ON KEY_LEFT:
+  MOVE CURRENT_PIECE LEFT
+END
+ON KEY_RIGHT:
+  MOVE CURRENT_PIECE RIGHT
+END
+ON KEY_DOWN:
+  MOVE CURRENT_PIECE DOWN
+END
+ON KEY_UP:
+  ROTATE CURRENT_PIECE
+END

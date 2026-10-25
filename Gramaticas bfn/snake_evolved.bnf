@@ -1,0 +1,64 @@
+/* snake_evolved.bnf - Gramatica de Snake con FORM y LEVELS.
+   Todo lo nuevo es OPCIONAL (alternativa vacia ""), asi el snake.brick
+   original sigue siendo un programa valido (retrocompatibilidad). */
+
+<programa> ::= <tipo_juego> <grid> <definiciones> <niveles_opt> <eventos>
+
+<tipo_juego> ::= "GAME_TYPE" "SNAKE"
+<grid>       ::= "GAME_GRID" "(" <numero> "," <numero> ")"
+<definiciones> ::= <definicion_shape> | <definicion_shape> <definiciones>
+<eventos>    ::= <evento> | <evento> <eventos>
+
+/* --- SHAPE: FORM y COLOR son opcionales --- */
+<definicion_shape> ::= "DEFINE" "SHAPE" <identificador> ":" <atributos_shape> <estados> "END"
+<atributos_shape>  ::= "" | <atributo_shape> <atributos_shape>
+<atributo_shape>   ::= <atrib_forma> | <atrib_color>
+<atrib_forma>      ::= "FORM" ":" <forma>
+<forma>            ::= "RECTANGULAR" | "CIRCULAR" | "TRIANGULAR"
+<atrib_color>      ::= "COLOR" ":" <color_hex>
+<color_hex>        ::= "#" <hex> <hex> <hex> <hex> <hex> <hex>
+<hex>              ::= <digito> | "A"..."F" | "a"..."f"
+
+<estados>          ::= <estado> | <estado> <estados>
+<estado>           ::= "STATE" <numero> ":" <matriz>
+<matriz>           ::= <fila> | <fila> <matriz>
+<fila>             ::= "[" <valores_fila> "]"
+<valores_fila>     ::= <numero> | <numero> "," <valores_fila>
+
+/* --- LEVELS: bloque opcional. Si no aparece, el runtime usa BABY --- */
+<niveles_opt>      ::= "" | <bloque_niveles>
+<bloque_niveles>   ::= "LEVELS" ":" <niveles> "END"
+<niveles>          ::= <nivel> | <nivel> <niveles>
+<nivel>            ::= "LEVEL" <identificador> ":" <atributos_nivel> "END"
+<atributos_nivel>  ::= "" | <atributo_nivel> <atributos_nivel>
+<atributo_nivel>   ::= <nv_velocidad> | <nv_siguiente> | <nv_veneno>
+                     | <nv_invulnerable> | <nv_nubes> | <nv_nyan>
+<nv_velocidad>     ::= "SPEED" ":" <numero>          /* milisegundos por paso */
+<nv_siguiente>     ::= "NEXT_AT" ":" <numero>        /* puntaje para subir de nivel */
+<nv_veneno>        ::= "POISON" ":" <numero>         /* puntos que resta la fruta venenosa */
+<nv_invulnerable>  ::= "INVULNERABLE" ":" <numero>   /* segundos del power-up No Morir */
+<nv_nubes>         ::= "CLOUDS" ":" <numero>         /* cantidad de nubes obstaculo */
+<nv_nyan>          ::= "NYAN" ":" <numero>           /* 1 = cabeza gato + cola multicolor */
+
+/* --- Eventos (sin cambios respecto a snake.bnf) --- */
+<evento>         ::= "ON" <nombre_evento_snake> ":" <acciones_snake> "END"
+<nombre_evento_snake> ::= "START" | "TICK" | "EAT_FOOD" | "COLLISION_WALL" | "COLLISION_SELF"
+                        | "KEY_UP" | "KEY_DOWN" | "KEY_LEFT" | "KEY_RIGHT"
+<acciones_snake>     ::= <accion_snake> | <accion_snake> <acciones_snake>
+
+<accion_snake> ::= <accion_spawn_jugador> | <accion_spawn_comida> | <accion_mover>
+                 | <accion_direccion> | <accion_puntos> | <accion_crecer> | <accion_gameover>
+<accion_spawn_jugador> ::= "SPAWN" "PLAYER" "AT" <coordenadas>
+<accion_spawn_comida>  ::= "SPAWN" "FOOD" "AT" "RANDOM"
+<accion_mover>         ::= "MOVE" "PLAYER" "FORWARD"
+<accion_direccion>     ::= "SET_DIRECTION" <direccion>
+<accion_puntos>        ::= "INCREASE_SCORE" <numero>
+<accion_crecer>        ::= "GROW" "PLAYER" <numero>
+<accion_gameover>      ::= "GAME_OVER"
+
+<coordenadas>   ::= "(" <numero> "," <numero> ")"
+<direccion>     ::= "UP" | "DOWN" | "LEFT" | "RIGHT"
+<identificador> ::= <letra> | <letra> <identificador>
+<numero>        ::= <digito> | <digito> <numero>
+<letra>         ::= "A"..."Z" | "_"
+<digito>        ::= "0"..."9"

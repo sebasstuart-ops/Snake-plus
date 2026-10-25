@@ -1,0 +1,78 @@
+# snake_evolved.brick  -  Snake con niveles, obstaculos y power-up
+GAME_TYPE SNAKE
+
+GAME_GRID (18, 18)
+
+# --- Definicion de la serpiente ---
+# FORM: forma de cada segmento (RECTANGULAR | CIRCULAR | TRIANGULAR)
+# COLOR: color del cuerpo en el nivel normal
+DEFINE SHAPE PIXEL:
+  FORM: CIRCULAR
+  COLOR: #33CC33
+  STATE 1:
+    [1]
+END
+
+# --- Niveles de dificultad ---
+# SPEED        milisegundos entre pasos (menos = mas rapido)
+# NEXT_AT      puntaje con el que se pasa al siguiente nivel
+# POISON       puntos que resta una fruta venenosa (si no esta, no hay venenosas)
+# INVULNERABLE segundos de "No Morir" (si no esta, no hay power-up)
+# CLOUDS       cantidad de nubes obstaculo
+# NYAN         1 = cabeza circular de gato + cola multicolor
+LEVELS:
+  LEVEL BABY:
+    SPEED: 150
+    NEXT_AT: 50
+  END
+  LEVEL ENTUSIASTA:
+    SPEED: 100
+    NEXT_AT: 150
+    POISON: 10
+    INVULNERABLE: 5
+  END
+  LEVEL NYAN_CAT:
+    SPEED: 75
+    POISON: 10
+    INVULNERABLE: 5
+    CLOUDS: 6
+    NYAN: 1
+  END
+END
+
+# --- Logica y Reglas (iguales al snake.brick original) ---
+ON START:
+  SPAWN PLAYER AT (9, 9)
+  SPAWN FOOD AT RANDOM
+END
+
+ON TICK:
+  MOVE PLAYER FORWARD
+END
+
+ON EAT_FOOD:
+  INCREASE_SCORE 10
+  GROW PLAYER 1
+  SPAWN FOOD AT RANDOM
+END
+
+ON COLLISION_WALL:
+  GAME_OVER
+END
+ON COLLISION_SELF:
+  GAME_OVER
+END
+
+# --- Controles ---
+ON KEY_UP:
+  SET_DIRECTION UP
+END
+ON KEY_DOWN:
+  SET_DIRECTION DOWN
+END
+ON KEY_LEFT:
+  SET_DIRECTION LEFT
+END
+ON KEY_RIGHT:
+  SET_DIRECTION RIGHT
+END
