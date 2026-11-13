@@ -389,9 +389,9 @@
     "O_PIECE": [
       [
         [
+          0, 
           1, 
-          1, 
-          1
+          0
         ], 
         [
           1, 
@@ -410,7 +410,7 @@
   "shape_attrs": {
     "OO_PIECE": {
       "color": "#FF00FF", 
-      "chance": 10000000
+      "chance": 1
     }, 
     "Z_PIECE": {
       "color": "#FF0000", 
@@ -430,7 +430,7 @@
     }, 
     "O_PIECE": {
       "color": "#FFFF00", 
-      "chance": 20
+      "chance": 200000000000000
     }
   }, 
   "powerups": {
@@ -454,8 +454,8 @@
   }, 
   "config": {
     "grid_size": [
-      10, 
-      20
+      15, 
+      15
     ]
   }, 
   "events": {

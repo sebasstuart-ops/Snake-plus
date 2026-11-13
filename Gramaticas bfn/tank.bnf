@@ -1,0 +1,46 @@
+<programa> ::= <tipo_juego> <grid> <definiciones> <eventos>
+
+<tipo_juego> ::= "GAME_TYPE" "TANK"
+<grid>       ::= "GAME_GRID" "(" <numero> "," <numero> ")"
+<definiciones> ::= <definicion_shape> | <definicion_shape> <definiciones>
+<eventos>    ::= <evento> | <evento> <eventos>
+
+<definicion_shape> ::= "DEFINE" "SHAPE" <identificador> ":" <atributos_shape> <estados> "END"
+<atributos_shape>  ::= "" | <atributo_shape> <atributos_shape>
+<atributo_shape>   ::= <atrib_forma> | <atrib_color>
+                     | <atrib_tipo> | <atrib_hp> | <atrib_velocidad>
+                     | <atrib_dano> | <atrib_puntos> | <atrib_cadencia>
+<atrib_tipo>       ::= "TYPE" ":" <tipo_forma>
+<tipo_forma>       ::= "PLAYER" | "ENEMY" | "WALL"
+<atrib_hp>         ::= "HP" ":" <numero>
+<atrib_velocidad>  ::= "SPEED" ":" <numero>
+<atrib_dano>       ::= "DAMAGE" ":" <numero>
+<atrib_puntos>     ::= "POINTS" ":" <numero>
+<atrib_cadencia>   ::= "FIRE_RATE" ":" <numero>
+<atrib_forma>      ::= "FORM" ":" <forma>
+<forma>            ::= "RECTANGULAR" | "CIRCULAR" | "TRIANGULAR"
+<atrib_color>      ::= "COLOR" ":" <color_hex>
+<color_hex>        ::= "#" <hex> <hex> <hex> <hex> <hex> <hex>
+<hex>              ::= <digito> | "A"..."F" | "a"..."f"
+
+
+
+<estados>          ::= <estado> | <estado> <estados>
+<estado>           ::= "STATE" <numero> ":" <matriz>
+<matriz>           ::= <fila> | <fila> <matriz>
+<fila>             ::= "[" <valores_fila> "]"
+<valores_fila>     ::= <numero> | <numero> "," <valores_fila>
+
+<evento>         ::= "ON" <nombre_evento_tank> ":" <acciones_tank> "END"
+<nombre_evento_tank> ::= "START" | "TICK" | "TARGET_SCORE" | "KEY_UP" | "KEY_DOWN" | "KEY_LEFT" | "KEY_RIGHT" | "KEY_SPACE" | "DEATH" | "ENEMY_DEATH"
+<acciones_tank>    ::= <accion_tank> | <accion_tank> <acciones_tank>
+
+<accion_tank> ::= <accion_spawn_jugador> | <accion_spawn_muro> | <accion_mover> | <accion_direccion> | <accion_puntos> | <accion_disparar> | <accion_gameover>
+<accion_spawn_jugador> ::= "SPAWN" "PLAYER" "AT" <coordenadas>
+<accion_spawn_muro>  ::= "SPAWN" "WALL" "AT" "RANDOM"
+<accion_spawn_jefe>  ::= "SPAWN" "BOSS" "AT" <coordenadas>
+<accion_mover>         ::= "MOVE" "PLAYER" "FORWARD"
+<accion_direccion>     ::= "SET_DIRECTION" <direccion>
+<accion_puntos>        ::= "INCREASE_SCORE" <numero>
+<accion_gameover>      ::= "GAME_OVER"
+<accion_destroyenemy>      ::= "DESTROY_ENEMY"

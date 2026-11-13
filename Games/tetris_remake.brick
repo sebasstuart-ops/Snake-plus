@@ -1,7 +1,7 @@
 # tetris_remake.brick
 GAME_TYPE TETRIS
 
-GAME_GRID (10, 20)
+GAME_GRID (15, 15)
 
 DEFINE SHAPE I_PIECE:
   COLOR:#00FFFF
@@ -72,9 +72,9 @@ END
 
 DEFINE SHAPE O_PIECE:
   COLOR:#FFFF00
-  CHANCE:20
+  CHANCE:200000000000000
   STATE 1:
-    [1, 1, 1]
+    [0, 1, 0]
     [1, 1, 1]
     [1, 1, 1]
 END
@@ -102,7 +102,7 @@ END
 
 DEFINE SHAPE OO_PIECE:
   COLOR:#FF00FF
-  CHANCE: 10000000
+  CHANCE: 1
   STATE 1:
     [0, 1, 1]
     [0, 1, 1]

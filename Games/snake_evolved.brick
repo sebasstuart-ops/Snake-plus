@@ -1,7 +1,7 @@
 # snake_evolved.brick  -  Snake con niveles, obstaculos y power-up
 GAME_TYPE SNAKE
 
-GAME_GRID (18, 18)
+GAME_GRID (28, 28)
 
 # --- Definicion de la serpiente ---
 # FORM: forma de cada segmento (RECTANGULAR | CIRCULAR | TRIANGULAR)
@@ -22,7 +22,7 @@ END
 # NYAN         1 = cabeza circular de gato + cola multicolor
 LEVELS:
   LEVEL BABY:
-    SPEED: 150
+    SPEED: 50
     NEXT_AT: 50
   END
   LEVEL ENTUSIASTA:
@@ -40,7 +40,7 @@ LEVELS:
   END
 END
 
-# --- Logica y Reglas (iguales al snake.brick original) ---
+# --- Logica y Reglas ---
 ON START:
   SPAWN PLAYER AT (9, 9)
   SPAWN FOOD AT RANDOM
@@ -74,5 +74,6 @@ ON KEY_LEFT:
   SET_DIRECTION LEFT
 END
 ON KEY_RIGHT:
+
   SET_DIRECTION RIGHT
 END

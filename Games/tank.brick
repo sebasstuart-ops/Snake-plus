@@ -1,0 +1,162 @@
+# tank.brick
+GAME_TYPE SNAKE
+
+GAME_GRID (30, 30)
+TARGET_SCORE 1000
+
+DEFINE SHAPE MTANK:
+  TYPE: PLAYER
+  SPEED: 200
+  COLOR: #62ee3b
+  HP: 10
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [1, 1, 1]
+  STATE 2:
+    [1, 1, 0]
+    [1, 1, 1]
+    [1, 1, 0]
+  STATE 3:
+    [1, 1, 1]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 1]
+    [1, 1, 1]
+    [0, 1, 1]
+END
+
+DEFINE SHAPE NORMAL:
+  TYPE: ENEMY
+  SPEED: 200
+  COLOR: #0d00ff
+  HP: 1
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [1, 1, 1]
+  STATE 2:
+    [1, 1, 0]
+    [1, 1, 1]
+    [1, 1, 0]
+  STATE 3:
+    [1, 1, 1]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 1]
+    [1, 1, 1]
+    [0, 1, 1]
+END
+
+DEFINE SHAPE FAST:
+  TYPE: ENEMY
+  SPEED: 150
+  COLOR: #ee3be8
+  HP: 1
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [1, 1, 1]
+  STATE 2:
+    [1, 1, 0]
+    [1, 1, 1]
+    [1, 1, 0]
+  STATE 3:
+    [1, 1, 1]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 1]
+    [1, 1, 1]
+    [0, 1, 1]
+END
+
+DEFINE SHAPE HEAVY:
+  TYPE: ENEMY
+  SPEED: 250
+  COLOR: #537402
+  HP: 5
+  STATE 1:
+    [0, 1, 0]
+    [1, 1, 1]
+    [1, 1, 1]
+  STATE 2:
+    [1, 1, 0]
+    [1, 1, 1]
+    [1, 1, 0]
+  STATE 3:
+    [1, 1, 1]
+    [1, 1, 1]
+    [0, 1, 0]
+  STATE 4:
+    [0, 1, 1]
+    [1, 1, 1]
+    [0, 1, 1]
+END
+
+
+DEFINE SHAPE E_BOSS:
+  TYPE: BOSS
+  SPEED: 300
+  COLOR: #a91111
+  HP: 50
+  STATE 1:
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1]
+    [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+ 
+END
+
+DEFINE SHAPE BULLET:
+  COLOR: #f6ff00
+  SPEED: 50
+  STATE 1:
+    [1]
+END
+
+DEFINE SHAPE WALL:
+  TYPE: WALL
+  COLOR: #986944
+  HP: 4
+  STATE 1: [1]
+  STATE 2: [1]
+END
+
+ON START:
+  SPAWN PLAYER AT (9, 9)
+  SPAWN WALL
+END
+ON TICK:
+  MOVE BULLET FORWARD
+END
+
+ON TARGET_SCORE:
+  SPAWN BOSS AT (6, 1)
+END
+
+ON DEATH:
+  GAME_OVER
+END
+
+ON ENEMY_DEATH:
+  DESTROY_ENEMY
+END
+
+ON KEY_LEFT:
+  MOVE CURRENT_PIECE LEFT
+END
+ON KEY_RIGHT:
+  MOVE CURRENT_PIECE RIGHT
+END
+ON KEY_DOWN:
+  MOVE CURRENT_PIECE DOWN
+END
+ON KEY_UP:
+  ROTATE CURRENT_PIECE
+END
+ON KEY_SPACE:
+  SHOOT PLAYER
+END  

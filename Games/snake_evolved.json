@@ -3,7 +3,7 @@
     {
       "nombre": "BABY", 
       "next_at": 50, 
-      "speed": 150
+      "speed": 50
     }, 
     {
       "nombre": "ENTUSIASTA", 
@@ -39,8 +39,8 @@
   }, 
   "config": {
     "grid_size": [
-      18, 
-      18
+      28, 
+      28
     ]
   }, 
   "events": {

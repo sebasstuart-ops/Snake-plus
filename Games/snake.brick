@@ -1,7 +1,7 @@
 # snake.brick
 GAME_TYPE SNAKE
 
-GAME_GRID (18, 18)
+GAME_GRID (25, 25)
 
 # --- Definicion de Elementos ---
 DEFINE SHAPE PIXEL:
