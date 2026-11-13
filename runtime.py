@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 # runtime.py (VERSION CON INTERFAZ GRAFICA USANDO Tkinter y caracteres ASCII unicamente)
-#
-# FLUJO: el compilador genera un .json; este programa lo LEE (json.load) y
-# ejecuta el juego. Todo lo que el runtime sabe del juego sale de ese JSON.
-# Actividad 4 (Snake evolucionado): niveles, nubes, frutas venenosas, power-up
-# "No Morir" y formas de dibujo. Todo es opcional: si el JSON no trae la clave
-# 'levels' el juego se comporta exactamente como el Snake original.
 
 import sys
 import json
@@ -18,9 +12,6 @@ import tkMessageBox # Necesario para el GAME OVER
 # import os
 # import msvcrt 
 
-# En Python 2.7 'basestring' existe (es el tipo comun de str y unicode).
-# En Python 3 no existe; este bloque evita el aviso del editor (Pylance) y
-# no cambia nada al ejecutar con Python 2.7.
 try:
     basestring
 except NameError:
@@ -28,13 +19,9 @@ except NameError:
 
 
 class Juego:
-    # Segundos que pasan, tras terminar el efecto "No Morir", antes de que
-    # aparezca otra estrella en el mapa.
     INTERVALO_ESTRELLA = 10
-    # Colores de las entidades nuevas de Snake
     COLOR_VENENO = '#9B30FF'
     COLOR_ESTRELLA = '#FFD700'
-    # Colores de la cola en el nivel Nyan Cat (se reparten con el operador %)
     ARCOIRIS = ['#FF0000', '#FF8C00', '#FFFF00', '#00FF00', '#00BFFF', '#8A2BE2']
 
     def __init__(self, datos_juego):
@@ -79,38 +66,31 @@ class Juego:
             self.pieza_actual = None
             self.pieza_x, self.pieza_y, self.pieza_rotacion = 0, 0, 0
             self.velocidad_gravedad = 0.4
-            # --- Atributos dinamicos leidos del JSON (COLOR, CHANCE, POWERUP) ---
-            self.pieza_color = '#00FFFF'    # color de la pieza activa
-            self.pieza_nombre = None        # nombre de la pieza activa
+            self.pieza_color = '#00FFFF'   
+            self.pieza_nombre = None    
             self.pieza_es_powerup = False
             self.powerup_actual = None
-            self.pu_estado = {}             # contadores por power-up
+            self.pu_estado = {}          
         
         if self.tipo_juego == 'SNAKE':
             self.serpiente_cuerpo = []
             self.serpiente_direccion = (1, 0)
             self.posicion_comida = None
-            self.velocidad_gravedad = 0.15      # 150 ms: igual que el Snake original
-            # --- Actividad 4: se leen del JSON (clave 'levels', opcional) ---
-            # 'or [...]' = retrocompatibilidad: sin LEVELS el juego es solo BABY
-            # y NO cambia la velocidad (no trae 'speed').
+            self.velocidad_gravedad = 0.15   
             self.niveles = self.datos_juego.get('levels') or [{'nombre': 'BABY'}]
             self.nivel_idx = 0
-            self.nubes = []                     # lista de celdas (x, y)
-            self.venenos = []                   # frutas venenosas
-            self.estrella = None                # fruta del power-up No Morir
+            self.nubes = []                     
+            self.venenos = []                   
+            self.estrella = None              
             self.penalizacion_veneno = 0
             self.duracion_invul = 0
             self.modo_nyan = False
-            # "Manejador de estados": NORMAL <-> INVULNERABLE
             self.estado = 'NORMAL'
-            self.t_fin_invul = 0                # hora (time.time()) en que termina
+            self.t_fin_invul = 0              
             self.t_proxima_estrella = 0
-            # Atributos de la serpiente (SHAPE PIXEL) leidos del JSON
             atributos_serpiente = self.datos_juego.get('shape_attrs', {}).get('PIXEL', {})
             self.forma_serpiente = atributos_serpiente.get('form', 'RECTANGULAR')
-            self.color_serpiente = atributos_serpiente.get('color')   # None = color original
-            # Panel lateral con el nivel (solo si el juego define varios niveles)
+            self.color_serpiente = atributos_serpiente.get('color')  
             self.label_nivel = None
             if len(self.niveles) > 1:
                 self.label_nivel = tk.Label(self.marco_score, text="", bg='#222222', fg='#FFD700', font=('Consolas', 11, 'bold'))
@@ -118,11 +98,9 @@ class Juego:
                 self.label_controles.config(text="CONTROLES\nFlechas: Mover\n1/2/3: Cambiar nivel")
         
         self.timer_gravedad = 0
-        self.frame_ms = 25      # el loop de dibujo corre cada 25 ms (antes 50)
+        self.frame_ms = 25      
         self.ejecutar_evento('ON_START')
         if self.tipo_juego == 'SNAKE':
-            # Despues de ON_START: asi la serpiente ya existe y las nubes
-            # no pueden nacer encima de ella.
             self.aplicar_nivel(0)
         self.timer_id = None # Para controlar el loop de Tkinter
 
@@ -144,9 +122,6 @@ class Juego:
         if self.timer_gravedad + 0.0001 >= self.velocidad_gravedad:
             self.timer_gravedad = 0
             self.ejecutar_evento('ON_TICK')
-
-        # El timer del power-up se revisa en CADA frame (no solo en cada tick)
-        # para que la cuenta regresiva sea exacta sin importar la velocidad.
         if self.tipo_juego == 'SNAKE':
             self.snake_actualizar_estado()
 
@@ -207,7 +182,6 @@ class Juego:
             for x in range(self.ancho):
                 celda_fija = self.grid[y][x]
                 if celda_fija:
-                    # Si la celda guarda un color (string) se usa; si no, gris
                     color_fijo = celda_fija if isinstance(celda_fija, basestring) else COLOR_GRID_FIJA
                     self.dibujar_celda(x, y, color_fijo)
 
@@ -221,7 +195,6 @@ class Juego:
         
         # 3. Dibujar Snake, comida, obstaculos y power-up
         if self.tipo_juego == 'SNAKE':
-            # Entidades de la Actividad 4 (listas vacias en el Snake original)
             for (x, y) in self.nubes:
                 self.dibujar_nube(x, y)
             for (x, y) in self.venenos:
@@ -246,8 +219,7 @@ class Juego:
                     else:
                         self.dibujar_forma(x, y, color, self.forma_serpiente)
                 else:
-                    # COLA: en Nyan Cat cada segmento toma un color distinto.
-                    # i % len(ARCOIRIS) da 0,1,2,3,4,5,0,1,... (se repite)
+                    # COLA
                     if self.modo_nyan:
                         color = self.ARCOIRIS[i % len(self.ARCOIRIS)]
                     else:
@@ -261,21 +233,18 @@ class Juego:
         self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline='#000000')
 
     def dibujar_forma(self, x, y, color, forma='RECTANGULAR'):
-        # Dibuja UNA celda con la forma pedida en el .brick (FORM:)
         ts = self.taman_celda
         x1, y1 = x * ts, y * ts
         x2, y2 = x1 + ts, y1 + ts
         if forma == 'CIRCULAR':
             self.canvas.create_oval(x1 + 2, y1 + 2, x2 - 2, y2 - 2, fill=color, outline='')
         elif forma == 'TRIANGULAR':
-            # create_polygon recibe los vertices: punta arriba, base abajo
             self.canvas.create_polygon(x1 + ts // 2, y1 + 2, x2 - 2, y2 - 2, x1 + 2, y2 - 2,
                                        fill=color, outline='')
         else:
-            self.dibujar_celda(x, y, color)      # RECTANGULAR (el original)
+            self.dibujar_celda(x, y, color)
 
     def dibujar_cabeza_gato(self, x, y, color):
-        # Cabeza del nivel Nyan Cat: circulo + dos orejas triangulares + ojos
         ts = self.taman_celda
         x1, y1 = x * ts, y * ts
         self.canvas.create_polygon(x1 + 1, y1 + 9, x1 + 3, y1, x1 + 11, y1 + 5, fill=color, outline='#000000')
@@ -285,7 +254,6 @@ class Juego:
         self.canvas.create_oval(x1 + ts - 10, y1 + 11, x1 + ts - 6, y1 + 15, fill='#000000')
 
     def dibujar_nube(self, x, y):
-        # Nube obstaculo: dos ovalos superpuestos
         ts = self.taman_celda
         x1, y1 = x * ts, y * ts
         self.canvas.create_oval(x1 + 1, y1 + 8, x1 + ts - 1, y1 + ts - 2, fill='#DDDDDD', outline='')
@@ -316,8 +284,6 @@ class Juego:
     # ---------------------------------------------------------------------
 
     def tetris_elegir_forma_ponderada(self):
-        # Seleccion ponderada con la libreria estandar (sin numpy):
-        # se acumulan los pesos (CHANCE) y se busca donde cae un numero al azar.
         formas = self.datos_juego['shapes']
         atributos = self.datos_juego.get('shape_attrs', {})
         nombres = sorted(formas.keys())
@@ -339,7 +305,6 @@ class Juego:
         return self.pu_estado[nombre]
 
     def powerup_listo(self, nombre, pu):
-        # Un power-up aparece cuando se cumplen TODAS las condiciones que define
         tl = pu.get('trigger_lineas', 0)
         tr = pu.get('trigger_rotacion')
         if not tl and not tr:
@@ -352,14 +317,12 @@ class Juego:
         return True
 
     def powerup_registrar_lineas(self, cantidad):
-        # Condicion: limpiar n lineas SIMULTANEAMENTE
         for nombre, pu in self.datos_juego.get('powerups', {}).items():
             tl = pu.get('trigger_lineas', 0)
             if tl and cantidad >= tl:
                 self.powerup_estado(nombre)['lineas_ok'] = True
 
     def powerup_registrar_rotacion(self):
-        # Condicion: rotar n veces una pieza determinada (ej. la L)
         if self.pieza_es_powerup or not self.pieza_nombre:
             return
         for nombre, pu in self.datos_juego.get('powerups', {}).items():
@@ -371,12 +334,10 @@ class Juego:
         self.puntuacion += int(pu.get('puntos', 0))
         efecto = pu.get('efecto')
         if efecto == 'CLEAR_ROW':
-            # Borra la(s) fila(s) donde cayo el power-up
             for gy in sorted(set([c[1] for c in celdas])):
                 del self.grid[gy]
                 self.grid.insert(0, [0] * self.ancho)
         elif efecto == 'FILL_COLUMN':
-            # Se incrusta rellenando los huecos de su columna hacia abajo
             for gx, gy in celdas:
                 for yy in range(gy, self.alto):
                     if self.grid[yy][gx] == 0:
@@ -435,7 +396,6 @@ class Juego:
             for x_offset, celda in enumerate(fila):
                 if celda == 1:
                     if 0 <= self.pieza_y + y_offset < self.alto and 0 <= self.pieza_x + x_offset < self.ancho:
-                        # Se guarda el color de la pieza en la celda fija
                         self.grid[self.pieza_y + y_offset][self.pieza_x + x_offset] = self.pieza_color
                         celdas.append((self.pieza_x + x_offset, self.pieza_y + y_offset))
         era_powerup, pu = self.pieza_es_powerup, self.powerup_actual
@@ -471,26 +431,19 @@ class Juego:
         self.serpiente_cuerpo = [(coords[0], coords[1])]
         self.serpiente_direccion = (1, 0)
         
-    # ------------------------------------------------------------------
-    # ACTIVIDAD 4: NIVELES, OBSTACULOS Y POWER-UP "NO MORIR" (SNAKE)
-    # ------------------------------------------------------------------
     def aplicar_nivel(self, idx):
-        # Carga la configuracion del nivel idx (viene del bloque LEVELS del .brick)
         n = self.niveles[idx]
         self.nivel_idx = idx
         if 'speed' in n:
-            # ms -> segundos. Se divide entre 1000.0 (con .0) porque en
-            # Python 2.7 la division de enteros (200 / 1000) da 0.
             self.velocidad_gravedad = n['speed'] / 1000.0
         self.penalizacion_veneno = n.get('poison', 0)
         self.duracion_invul = n.get('invulnerable', 0)
         self.modo_nyan = bool(n.get('nyan', 0))
-        # Cada nivel empieza con sus propios obstaculos
         self.nubes = []
         self.venenos = []
         self.estrella = None
         for _ in range(n.get('clouds', 0)):
-            celda = self.snake_celda_libre(3)       # no cerca de la cabeza
+            celda = self.snake_celda_libre(3)     
             if celda:
                 self.nubes.append(celda)
         if self.penalizacion_veneno:
@@ -501,8 +454,6 @@ class Juego:
             self.estrella = self.snake_celda_libre()
 
     def snake_celda_libre(self, distancia_cabeza=0):
-        # Devuelve una celda (x, y) vacia al azar, o None si no queda ninguna.
-        # distancia_cabeza > 0: tambien evita las celdas cercanas a la cabeza.
         ocupadas = set(self.serpiente_cuerpo) | set(self.nubes) | set(self.venenos)
         if self.posicion_comida:
             ocupadas.add(self.posicion_comida)
@@ -528,8 +479,6 @@ class Juego:
             self.posicion_comida = celda
 
     def snake_actualizar_estado(self):
-        # MANEJADOR DE ESTADOS: se llama en cada frame.
-        # NORMAL --(come la estrella)--> INVULNERABLE --(pasan n segundos)--> NORMAL
         ahora = time.time()
         if self.estado == 'INVULNERABLE' and ahora >= self.t_fin_invul:
             self.estado = 'NORMAL'
@@ -539,7 +488,6 @@ class Juego:
             self.estrella = self.snake_celda_libre()
 
     def snake_revisar_nivel(self):
-        # Sube de nivel cuando el puntaje alcanza NEXT_AT del nivel actual
         n = self.niveles[self.nivel_idx]
         if 'next_at' in n and self.nivel_idx + 1 < len(self.niveles) \
                 and self.puntuacion >= n['next_at']:
@@ -552,8 +500,6 @@ class Juego:
         nueva_cabeza = (cabeza_x + dir_x, cabeza_y + dir_y)
         invulnerable = (self.estado == 'INVULNERABLE')
 
-        # 1. PARED: normal -> evento ON_COLLISION_WALL (game over en el .brick).
-        #    Invulnerable -> reaparece por el lado opuesto (% = modulo).
         if not (0 <= nueva_cabeza[0] < self.ancho and 0 <= nueva_cabeza[1] < self.alto):
             if invulnerable:
                 nueva_cabeza = (nueva_cabeza[0] % self.ancho, nueva_cabeza[1] % self.alto)
@@ -561,12 +507,10 @@ class Juego:
                 self.ejecutar_evento('ON_COLLISION_WALL')
                 return
 
-        # 2. CUERPO PROPIO (invulnerable lo atraviesa)
         if nueva_cabeza in self.serpiente_cuerpo[:-1] and not invulnerable:
             self.ejecutar_evento('ON_COLLISION_SELF')
             return
 
-        # 3. NUBE: pierde TODOS los puntos pero sigue vivo; si ya tenia 0 -> game over
         if nueva_cabeza in self.nubes and not invulnerable:
             if self.puntuacion > 0:
                 self.puntuacion = 0
@@ -576,16 +520,15 @@ class Juego:
 
         self.serpiente_cuerpo.insert(0, nueva_cabeza)
 
-        # 4. QUE SE COMIO
         if nueva_cabeza == self.posicion_comida:
-            self.ejecutar_evento('ON_EAT_FOOD')         # crece (no se hace pop)
+            self.ejecutar_evento('ON_EAT_FOOD')       
         elif nueva_cabeza in self.venenos:
             self.puntuacion = max(0, self.puntuacion - self.penalizacion_veneno)
             self.venenos.remove(nueva_cabeza)
             celda = self.snake_celda_libre()
             if celda:
                 self.venenos.append(celda)
-            self.serpiente_cuerpo.pop()                 # no crece
+            self.serpiente_cuerpo.pop()           
         elif nueva_cabeza == self.estrella:
             self.estado = 'INVULNERABLE'
             self.t_fin_invul = time.time() + self.duracion_invul

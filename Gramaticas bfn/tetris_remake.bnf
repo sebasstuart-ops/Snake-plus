@@ -3,12 +3,9 @@
 <tipo_juego> ::= "GAME_TYPE" "TETRIS"
 <grid>       ::= "GAME_GRID" "(" <numero> "," <numero> ")"
 <eventos>    ::= <evento> | <evento> <eventos>
-
-/* --- Definiciones: piezas normales y power-ups (en cualquier orden) --- */
 <definiciones> ::= <definicion> | <definicion> <definiciones>
 <definicion>   ::= <definicion_shape> | <definicion_powerup>
 
-/* --- SHAPE: COLOR y CHANCE son OPCIONALES (retrocompatibilidad) --- */
 <definicion_shape> ::= "DEFINE" "SHAPE" <identificador> ":" <atributos_shape> <estados> "END"
 <atributos_shape>  ::= "" | <atributo_shape> <atributos_shape>
 <atributo_shape>   ::= <atrib_color> | <atrib_chance>
@@ -17,7 +14,6 @@
 <color_hex>        ::= "#" <hex> <hex> <hex> <hex> <hex> <hex>
 <hex>              ::= <digito> | "A"..."F" | "a"..."f"
 
-/* --- POWERUP: objeto especial con efecto y condiciones de aparicion --- */
 <definicion_powerup> ::= "DEFINE" "POWERUP" <identificador> ":" <atributos_powerup> <estados> "END"
 <atributos_powerup>  ::= "" | <atributo_powerup> <atributos_powerup>
 <atributo_powerup>   ::= <atrib_color> | <atrib_efecto> | <atrib_puntos> | <trigger_lineas> | <trigger_rotar>
@@ -27,14 +23,12 @@
 <trigger_lineas>     ::= "TRIGGER_LINES" ":" <numero>
 <trigger_rotar>      ::= "TRIGGER_ROTATE" ":" <identificador> <numero>
 
-/* --- Estados y matrices (sin cambios) --- */
 <estados>          ::= <estado> | <estado> <estados>
 <estado>           ::= "STATE" <numero> ":" <matriz>
 <matriz>           ::= <fila> | <fila> <matriz>
 <fila>             ::= "[" <valores_fila> "]"
 <valores_fila>     ::= <numero> | <numero> "," <valores_fila>
 
-/* --- Eventos (sin cambios) --- */
 <evento>         ::= "ON" <nombre_evento_tetris> ":" <acciones_tetris> "END"
 <nombre_evento_tetris> ::= "START" | "TICK" | "LINE_CLEAR" | "KEY_UP" | "KEY_DOWN" | "KEY_LEFT" | "KEY_RIGHT"
 <acciones_tetris>    ::= <accion_tetris> | <accion_tetris> <acciones_tetris>

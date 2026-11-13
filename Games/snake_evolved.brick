@@ -40,7 +40,7 @@ LEVELS:
   END
 END
 
-# --- Logica y Reglas (iguales al snake.brick original) ---
+# --- Logica y Reglas ---
 ON START:
   SPAWN PLAYER AT (9, 9)
   SPAWN FOOD AT RANDOM
